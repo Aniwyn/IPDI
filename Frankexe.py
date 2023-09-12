@@ -9,7 +9,7 @@ root = Tk()
 root.title("Introduccion al Procesamiento Digital de Imagenes")
 root.configure(background='#474747')
 root.geometry('820x760')
-root.attributes("-fullscreen", True)
+# root.attributes("-fullscreen", True)
 
 def cargar_imagen():
     try:
