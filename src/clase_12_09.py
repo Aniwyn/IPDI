@@ -107,7 +107,7 @@ class App(object):
         return image
 
     def filtroRaiz(self, size, image):
-        im = imageio.imread('resource/Img_oscura.bmp')
+        im = imageio.imread('../resource/Img_oscura.bmp')
         im = np.clip(im / 255., 0., 1.)
         yiq = to_yiq(im)
         yiq[:,:,0] = np.sqrt(yiq[:,:,0])
@@ -116,7 +116,7 @@ class App(object):
         plt.show()
 
     def filtroCuadratica(self, size, image):
-        im = imageio.imread('resource/Img_oscura.bmp')
+        im = imageio.imread('../resource/Img_oscura.bmp')
         im = np.clip(im / 255., 0., 1.)
         yiq = to_yiq(im)
         yiq[:,:,0] = yiq[:,:,0] ** 2
@@ -126,7 +126,7 @@ class App(object):
 
 
     def filtroLineal(self, size, image):
-        im = imageio.imread('resource/Img_oscura.bmp')
+        im = imageio.imread('../resource/Img_oscura.bmp')
         im = np.clip(im / 255., 0., 1.)
         yiq = to_yiq(im)
         yiq[:,:,0] *= 1

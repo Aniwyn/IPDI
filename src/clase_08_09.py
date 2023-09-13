@@ -2,10 +2,6 @@ import imageio.v2 as imageio
 import matplotlib.pyplot as plt
 import numpy as np
 
-# im = imageio.imread('imageio:chelsea.png')
-im = imageio.imread('resource/Charly.bmp')
-im = np.clip(im / 255., 0., 1.)
-
 
 def to_yiq(im_rgb):
     new_yiq = np.zeros(im_rgb.shape)
@@ -36,21 +32,26 @@ def to_rgb(im_yiq):
     return np.clip(new_rgb, 0, 255)
 
 
-def apply_params(img, param_a, param_b):
-    new_image = np.zeros(img.shape)
-    new_image[:, :, 0] = img[:, :, 0] * param_a
-    new_image[:, :, 1] = img[:, :, 1] * param_b
-    new_image[:, :, 2] = img[:, :, 2] * param_b
-    return new_image
+im1 = imageio.imread('../resource/image1.png')
+im1 = np.clip(im1 / 255., 0., 1.)
+im2 = imageio.imread('../resource/image2.png')
+im2 = np.clip(im2 / 255., 0., 1.)
 
+ima = im1 + im2
+imb = ima.copy() / 2
+#ima = np.clip(ima / 255., 0., 1.)
+#imb = np.clip(imb / 255., 0., 1.)
 
-yiq = to_yiq(im)
+imc = to_yiq(im1)
+imd = to_yiq(im2)
 
-a = 1
-b = 1
-convert = apply_params(yiq, a, b)
+imyiq = np.zeros(imc.shape)
 
-rgb = to_rgb(convert)
+imyiq[:, :, 0] = (imc[:, :, 0] + imd[:, :, 0]) / 2
+imyiq[:, :, 1] = ((imc[:, :, 0] * imc[:, :, 1]) + (imd[:, :, 0] * imd[:, :, 1])) / (imc[:, :, 0] + imd[:, :, 0])
+imyiq[:, :, 2] = ((imc[:, :, 0] * imc[:, :, 2]) + (imd[:, :, 0] * imd[:, :, 2])) / (imc[:, :, 0] + imd[:, :, 0])
 
-plt.imshow(rgb)
+plt.imshow(imb)
+plt.show()
+plt.imshow(to_rgb(imyiq))
 plt.show()
