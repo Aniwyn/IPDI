@@ -57,6 +57,7 @@ def multScalarRGB(A, N):
 
 def divRGB(A, B):
   n = 0.000001
+
   return np.clip(((A / (B + n)) * 255).astype(int), 0, 255)
 
 
