@@ -97,6 +97,9 @@ def rgb_operations_clamp(image_path_1, image_path_2, operation, size):
     elif operation == 'light':
         r, g, b = [np.maximum(image1[:, :, i], image2[:, :, i]) for i in range(3)]
         image = np.dstack((r, g, b))
+    else:
+        r, g, b = [np.minimum(image1[:, :, i], image2[:, :, i]) for i in range(3)]
+        image = np.dstack((r, g, b))
     image_pil = Image.fromarray(image)
     return resize_image_dir(image_pil, size)
 
