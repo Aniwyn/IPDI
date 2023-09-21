@@ -176,16 +176,17 @@ class App(object):
     def mostrar_histograma(self, datos, x, y):
         print(np.max(datos), np.min(datos))
         datos = datos.flatten()
-        hist, bin_edges = np.histogram(datos, bins=10)
+        hist, bin_edges = np.histogram(datos, bins=[0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0])
         porcentajes = (hist / len(datos)) * 100
         print(hist)
 
         # Crea el histograma
-        plt.bar(bin_edges[:-1], porcentajes, width=0.1, color='blue', alpha=0.7)
+        plt.bar(bin_edges[:-1], porcentajes, width=0.1, color='blue')
         plt.xlabel('Valores')
         plt.ylabel('Frecuencia')
         plt.title('Histograma de Datos')
         plt.gca().set_ylim(0.0, 100.0)
+        plt.gca().set_xlim(0.0, 1.0)
 
         plt.gcf().set_size_inches(4, 2.5)
 
