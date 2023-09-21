@@ -1,19 +1,40 @@
 # ------------------------Libraries----------------------------------
 import numpy as np
-import imageio
+import imageio.v2 as imageio
+from PIL import ImageTk
 
 
 # ------------------------Img Manager----------------------
 def uploadImgNormalize(path):
-    return np.clip(imageio.v2.imread(path) / 255., 0, 1)
+    return np.clip(imageio.imread(path) / 255., 0, 1)
 
 
 def saveImg(img, path):
-    return imageio.v2.imwrite(path, img.astpype(np.uint8))
+    return imageio.imwrite(path, img.astpype(np.uint8))
+
+def resize_image_dir(image, size):
+    width, height = image.size
+    if width > height:
+        new_width = size
+        new_height = int(height * (size / width))
+    else:
+        new_width = int(width * (size / height))
+        new_height = size
+    new_image = ImageTk.PhotoImage(image.resize((new_width, new_height)))
+    return new_image
 
 
 # ------------------------Across Space Chromatic----------------------
 def RGBtoYIQ(img):
+    img = np.clip(imageio.imread(img) / 255., 0.,1.)
+    yiq = np.zeros(img.shape)
+    yiq[:, :, 0] = np.clip(0.299 * img[:, :, 0] + 0.587 * img[:, :, 1] + 0.144 * img[:, :, 2], None, 1)
+    yiq[:, :, 1] = np.clip(0.595716 * img[:, :, 0] - 0.274453 * img[:, :, 1] - 0.321263 * img[:, :, 2], -0.5957, 0.5957)
+    yiq[:, :, 2] = np.clip(0.211456 * img[:, :, 0] - 0.52591 * img[:, :, 1] + 0.311135 * img[:, :, 2], -0.5226, 0.5226)
+
+    return yiq
+
+def RGBtoYIQ_array(img):
     yiq = np.zeros(img.shape)
     yiq[:, :, 0] = np.clip(0.299 * img[:, :, 0] + 0.587 * img[:, :, 1] + 0.144 * img[:, :, 2], None, 1)
     yiq[:, :, 1] = np.clip(0.595716 * img[:, :, 0] - 0.274453 * img[:, :, 1] - 0.321263 * img[:, :, 2], -0.5957, 0.5957)
@@ -27,7 +48,9 @@ def YIQtoRGB(img):
     rgb[:, :, 0] = img[:, :, 0] + 0.9663 * img[:, :, 1] + 0.6210 * img[:, :, 2]
     rgb[:, :, 1] = img[:, :, 0] - 0.2721 * img[:, :, 1] - 0.6474 * img[:, :, 2]
     rgb[:, :, 2] = img[:, :, 0] - 1.1070 * img[:, :, 1] + 1.7046 * img[:, :, 2]
-    return np.clip((rgb * 255).astype(int), 0, 255)
+
+    rgb = np.clip((rgb * 255).astype(int), 0, 255).astype(np.uint8)
+    return rgb
 
 
 def YIQtoRGB_mod(img):
@@ -35,6 +58,8 @@ def YIQtoRGB_mod(img):
     rgb[:, :, 0] = img[:, :, 0] + 0.9663 * img[:, :, 1] + 0.6210 * img[:, :, 2]
     rgb[:, :, 1] = img[:, :, 0] - 0.2721 * img[:, :, 1] - 0.6474 * img[:, :, 2]
     rgb[:, :, 2] = img[:, :, 0] - 1.1070 * img[:, :, 1] + 1.7046 * img[:, :, 2]
+
+
     return np.mod((rgb * 255).astype(int), 255)
 
 
@@ -242,7 +267,6 @@ def ifDarkerYIQ(A, B):
 def raizFilter(A):
     A = RGBtoYIQ(A)
     A[:, :, 0] = np.sqrt(A[:, :, 0])
-
     return YIQtoRGB(A)
 
 
