@@ -137,6 +137,11 @@ class App(object):
             path_lb.config(text=self.path_img.get())
             img.config(image=image)
             img.image = image
+
+            plt1 = self.mostrar_histograma(libK.RGBtoYIQ(self.image1_path)[:, :, 0])
+            canvas1 = FigureCanvasTkAgg(plt1.gcf())
+            canvas1.get_tk_widget().place(x=15, y=300)
+            canvas1.draw()
         except ValueError:
             print('Hubo un error al cargar la imagen')
 
