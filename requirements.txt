@@ -3,3 +3,4 @@ matplotlib>=3.7.2
 numpy>=1.25.2
 Pillow>=10.0.0
 sv-ttk>=2.5.5
+RangeSlider>=2023.7.2

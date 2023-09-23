@@ -3,6 +3,7 @@ from tkinter import filedialog
 from PIL import ImageTk, Image
 import numpy as np
 import imageio
+from RangeSlider import RangeSliderH, RangeSliderV
 
 root = Tk()
 
@@ -71,5 +72,24 @@ actualizarBtn.pack()
 
 imgTest = Label(root)
 imgTest.pack()
+
+from tkinter.ttk import *
+import tkinter as tk
+
+root = tk.Tk()
+
+hLeft = tk.DoubleVar(value=0.2)  # left handle variable initialised to value 0.2
+hRight = tk.DoubleVar(value=0.85)  # right handle variable initialised to value 0.85
+hSlider = RangeSliderH(root, [hLeft, hRight],
+                       padX=12)  # horizontal slider, [padX] value might be needed to be different depending on system, font and handle size. Usually [padX] = 12 serves,
+# otherwise a recommended value will be shown through an error message
+hSlider.pack()  # or grid or place method could be used
+
+vBottom = tk.DoubleVar(value=0)  # bottom handle variable
+vTop = tk.DoubleVar(value=1)  # top handle variable
+vSlider = RangeSliderV(root, [vBottom, vTop],
+                       padY=12)  # vertical slider, [padY] value might be needed to be different depending on system, font and handle size. Usually [padY] = 12 serves,
+# otherwise a recommended value will be shown through an error message
+vSlider.pack()  # or grid or place method could be used
 
 root.mainloop()

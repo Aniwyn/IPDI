@@ -35,6 +35,7 @@ def RGBtoYIQ(img):
     return yiq
 
 def RGBtoYIQ_array(img):
+    img = np.clip(img / 255., 0., 1.)
     yiq = np.zeros(img.shape)
     yiq[:, :, 0] = np.clip(0.299 * img[:, :, 0] + 0.587 * img[:, :, 1] + 0.144 * img[:, :, 2], None, 1)
     yiq[:, :, 1] = np.clip(0.595716 * img[:, :, 0] - 0.274453 * img[:, :, 1] - 0.321263 * img[:, :, 2], -0.5957, 0.5957)
@@ -277,8 +278,13 @@ def expFilter(A):
     return YIQtoRGB(A)
 
 
-def linearPartialFiler(A, n, min, max):
+def linearPartialFiler(A, min, max):
     A = RGBtoYIQ(A)
-    A[:, :, 0] = np.clip(A[:, :, 0] * n, min, max)
+    min = float(min)
+    max = float(max)
+
+    A[:, :, 0] = np.where((A[:, :, 0] >= min) & (A[:, :, 0] <= max),
+                          ((-1 / (min - max)) * (A[:, :, 0] - min)),
+                          np.where(A[:, :, 0] > max, 1, 0))
 
     return YIQtoRGB(A)
