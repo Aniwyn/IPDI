@@ -1,16 +1,18 @@
 import imageio.v2 as imageio
 import matplotlib.pyplot as plt
 import numpy as np
-import PixelArithmetic as lib
+from src import a_lib as lib
 
-# im = imageio.imread('imageio:chelsea.png')
-im1 = imageio.imread('../resource/1024x600/1.png')
+im1 = imageio.imread('../resource/Charly.bmp')
 im1 = np.clip(im1 / 255., 0., 1.)
 
-im2 = imageio.imread('../resource/1024x600/2.png')
-im2 = np.clip(im2 / 255., 0., 1.)
+# im2 = imageio.imread('../resource/1024x600/2.png')
+# im2 = np.clip(im2 / 255., 0., 1.)
+image = lib.to_yiq(im1)
+asd = lib.babel_filter(image, 'S')
+qq = lib.to_rgb(asd)
 
-asd = lib.ifLighterRGB(im1, im2)
-
-plt.imshow(asd)
+plt.imshow(im1)
+plt.show()
+plt.imshow(qq)
 plt.show()

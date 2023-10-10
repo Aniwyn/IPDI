@@ -10,7 +10,7 @@ from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from src import a_lib as lib
-from PIL import ImageTk, Image
+from PIL import Image
 from src import PixelArithmetic as libK
 
 import sv_ttk
@@ -220,7 +220,7 @@ class App(object):
         plt.ylabel('Frecuencia')
         plt.title('Histograma de Datos')
         plt.gca().set_ylim(0.0, 100.0)
-        plt.gca().set_xlim(0.0, 1.0)
+        plt.gca().set_xlim(-0.05, 0.95)
 
         plt.gcf().set_size_inches(3.5, 2.5)
 
