@@ -12,6 +12,10 @@ def uploadImgNormalize(path):
 def saveImg(img, path):
     return imageio.imwrite(path, img.astpype(np.uint8))
 
+def saveImgTk(img, file):
+    imgPil = ImageTk.getimage(img)
+    imgPil.save(file.name)
+
 def resize_image_dir(image, size):
     width, height = image.size
     if width > height:

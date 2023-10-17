@@ -154,7 +154,7 @@ class App(object):
             )
             if file is None:
                 return
-            lib.save_image(self.image_resultant, file)
+            libK.saveImgTk(self.image_resultant, file)
         except ValueError:
             print('Hubo un error inesperado')
 

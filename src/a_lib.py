@@ -182,6 +182,54 @@ def yiq_operations_prom(image_path_1, image_path_2, operation, size):
     return resize_image_dir(image_pil, size)
 
 
+def convolve_operation(image_path, operation, size):
+    image1 = imageio.imread(image_path)
+    image1 = np.clip(image1 / 255., 0., 1.)
+    image1 = to_yiq(image1)
+
+    if operation == 'BoxBlur3':
+        image = box_blur_filter(image1, 3)
+    elif operation == 'BoxBlur5':
+        image = box_blur_filter(image1, 5)
+    elif operation == 'BoxBlur7':
+        image = box_blur_filter(image1, 7)
+    elif operation == 'GaussianBlur3':
+        image = gaussian_blur_filter(image1, 3)
+    elif operation == 'GaussianBlur5':
+        image = gaussian_blur_filter(image1, 5)
+    elif operation == 'GaussianBlur7':
+        image = gaussian_blur_filter(image1, 7)
+    elif operation == 'Bartlett3':
+        image = bartlett_filter(image1, 3)
+    elif operation == 'Bartlett5':
+        image = bartlett_filter(image1, 5)
+    elif operation == 'Bartlett7':
+        image = bartlett_filter(image1, 7)
+    elif operation == 'Laplace4':
+        image = laplacian_filter(image1, 4)
+    elif operation == 'Laplace8':
+        image = bartlett_filter(image1, 8)
+    elif operation == 'SobelN':
+        image = sobel_filter(image1, 'N')
+    elif operation == 'SobelNE':
+        image = sobel_filter(image1, 'NE')
+    elif operation == 'SobelE':
+        image = sobel_filter(image1, 'E')
+    elif operation == 'SobelSE':
+        image = sobel_filter(image1, 'SE')
+    elif operation == 'SobelS':
+        image = sobel_filter(image1, 'S')
+    elif operation == 'SobelSO':
+        image = sobel_filter(image1, 'SO')
+    elif operation == 'SobelO':
+        image = sobel_filter(image1, 'O')
+    elif operation == 'SobelNO':
+        image = sobel_filter(image1, 'NO')
+
+    image = to_rgb(image)
+    image_pil = Image.fromarray(image.astype(np.uint8))
+    return resize_image_dir(image_pil, size)
+
 def box_blur_filter(image, size):
     kernel = np.ones((size, size)) / (size ** 2)
     return convolve(image, kernel)
@@ -211,7 +259,6 @@ def gaussian_blur_filter(image, size):
 def bartlett_filter(image, size):
     row = []
     kernel = np.zeros((size, size))
-    n = size - 1
 
     for k in range(size // 2):
         row.append(k + 1)
@@ -222,10 +269,16 @@ def bartlett_filter(image, size):
     kernel[:, 0] = row
     kernel[:, size - 1] = row
 
+    sum = 0
     for i in range(1, size - 1):
         for j in range(1, size - 1):
             kernel[i, j] = kernel[0, j] * kernel[i, 0]
 
+    print(kernel)
+    for a in range(size):
+        for b in range(size):
+            sum += kernel[a,b]
+    print(sum)
     return convolve(image, kernel)
 
 
@@ -246,7 +299,7 @@ def laplacian_filter(image, version):
     return convolve(image, kernel)
 
 
-def babel_filter(image, direction):
+def sobel_filter(image, direction):
     kernel = []
     if direction == 'N':
         kernel = np.array([
