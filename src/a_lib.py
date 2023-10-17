@@ -299,9 +299,6 @@ def babel_filter(image, direction):
     return convolve(image, kernel)
 
 
-
-
-
 def convolve(image, kernel):
     min_dim = len(kernel[0, :]) // 2
     max_width = len(image[:, 0, 0]) - min_dim

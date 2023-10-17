@@ -18,7 +18,7 @@ import sv_ttk
 class App(object):
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("Introduccion al Procesamiento Digital de Imagenes - TP3")
+        self.root.title("Introduccion al Procesamiento Digital de Imagenes - TP4")
         self.root.geometry('1080x600')
         self.style = ttk.Style()
         sv_ttk.use_light_theme()
@@ -31,10 +31,10 @@ class App(object):
         self.operations = ['Raiz', 'Exponencial', 'Linear']
         self.operations_a = ['Raiz', 'Exponencial', 'Linear']
         self.operations_b = ['Lighter', 'Darker']
-        self.format_a = ['RGB - Clampeada', 'RGB - Promediada', 'YIQ - Clampeada', 'YIQ - Promediada']
+        self.format_a = ['3x3', '5x5', '7x7']
         self.format_b = ['RGB', 'YIQ']
 
-        self.image1_path = '../../resource/1024x600/1.png'
+        self.image1_path = '../../resource/Charly.bmp'
         image1 = lib.resize_image(self.image1_path, self.size_image)
         self.lb_img1 = Label(
             frame,
