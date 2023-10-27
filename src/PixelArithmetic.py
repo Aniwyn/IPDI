@@ -2,6 +2,7 @@
 import numpy as np
 import imageio.v2 as imageio
 from PIL import ImageTk
+import skimage.morphology as morp
 
 
 # ------------------------Img Manager----------------------
@@ -292,3 +293,15 @@ def linearPartialFiler(A, min, max):
                           np.where(A[:, :, 0] > max, 1, 0))
 
     return YIQtoRGB(A)
+
+# ------------------------Convolution--------------------------------
+
+# ------------------------Morfologia--------------------------------
+def erosion_binary(im):
+    return morp.binary_erosion(im)
+def erosion(im):
+    return morp.erosion(im)
+def dilation_binary(im):
+    return morp.binary_dilation(im)
+def dilation(im):
+    return morp.dilation(im)

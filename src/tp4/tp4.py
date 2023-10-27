@@ -187,21 +187,21 @@ class App(object):
             elif op == self.operations_b[0] and fmt == self.format_b[1]:
                 result, self.image_resultant = lib.convolve_operation(self.image1_path, 'Laplace8', self.size_image)
         elif op in self.operations_c and fmt in self.format_c:
-            if op == self.operations_c[1] and fmt == self.format_c[0]:
+            if op == self.operations_c[0] and fmt == self.format_c[0]:
                 result, self.image_resultant = lib.convolve_operation(self.image1_path, 'SobelN', self.size_image)
-            elif op == self.operations_b[1] and fmt == self.format_b[1]:
+            elif op == self.operations_c[0] and fmt == self.format_c[1]:
                 result, self.image_resultant = lib.convolve_operation(self.image1_path, 'SobelNE', self.size_image)
-            elif op == self.operations_b[1] and fmt == self.format_b[1]:
+            elif op == self.operations_c[0] and fmt == self.format_c[2]:
                 result, self.image_resultant = lib.convolve_operation(self.image1_path, 'SobelE', self.size_image)
-            elif op == self.operations_b[1] and fmt == self.format_b[1]:
+            elif op == self.operations_c[0] and fmt == self.format_c[3]:
                 result, self.image_resultant = lib.convolve_operation(self.image1_path, 'SobelSE', self.size_image)
-            elif op == self.operations_b[1] and fmt == self.format_b[1]:
+            elif op == self.operations_c[0] and fmt == self.format_c[4]:
                 result, self.image_resultant = lib.convolve_operation(self.image1_path, 'SobelS', self.size_image)
-            elif op == self.operations_b[1] and fmt == self.format_b[1]:
+            elif op == self.operations_c[0] and fmt == self.format_c[5]:
                 result, self.image_resultant = lib.convolve_operation(self.image1_path, 'SobelSO', self.size_image)
-            elif op == self.operations_b[1] and fmt == self.format_b[1]:
+            elif op == self.operations_c[0] and fmt == self.format_c[6]:
                 result, self.image_resultant = lib.convolve_operation(self.image1_path, 'SobelO', self.size_image)
-            elif op == self.operations_b[1] and fmt == self.format_b[1]:
+            elif op == self.operations_c[0] and fmt == self.format_c[7]:
                 result, self.image_resultant = lib.convolve_operation(self.image1_path, 'SobelNO', self.size_image)
         else:
             messagebox.showerror(
