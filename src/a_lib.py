@@ -351,6 +351,15 @@ def sobel_filter(image, direction):
         ])
     return convolve(image, kernel)
 
+def mediana_filter(image):
+    kernel = np.array([
+        [1, 2, 1],
+        [2, 4, 2],
+        [1, 2, 1]
+    ])
+
+    return convolve(image, kernel)
+
 
 def convolve(image, kernel):
     min_dim = len(kernel[0, :]) // 2
