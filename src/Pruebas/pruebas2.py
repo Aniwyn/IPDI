@@ -2,10 +2,6 @@ import imageio.v2
 import matplotlib.pyplot as plt
 import numpy as np
 import skimage.morphology
-
-import src.PixelArithmetic as k
-from src.a_lib import laplacian_filter as lp
-from src.a_lib import to_yiq,to_rgb,mediana_filter
 from sklearn.cluster import MeanShift as sms
 from sklearn.cluster import estimate_bandwidth
 import cv2
@@ -61,7 +57,7 @@ class MeanShift:
         return labels
 
 
-im = imageio.v2.imread('../../resource/p1.png')
+im = imageio.v2.imread('../../resource/f3.png')
 #im = np.clip(im/255,0.0,1.0)
 im = np.clip(im,0,255)
 #im = k.RGBtoYIQ_array(im)
@@ -95,12 +91,9 @@ b = np.column_stack((a[:,:,0].flatten(),a[:,:,1].flatten(),a[:,:,2].flatten()))
 #centroids = model.centroids_
 
 print(b.shape)
-#print('Cantidad de labels: ',len(np.unique(labels)))
-#print(np.unique(labels))
 print('entre')
-#bandwidth = estimate_bandwidth(b, quantile=1, n_samples=1000)
-#print('bandiwhth valor ',bandwidth)
 otherlabel = sms(bandwidth=29, bin_seeding=True).fit(b)
+#29 es el bueno de 5 clases
 print('Sali')
 print(b.shape)
 print('Cantidad de labels de sklearn: ',len(np.unique(otherlabel.labels_)))
@@ -116,28 +109,32 @@ print(np.unique(otherlabel.labels_))
 #plt.show()
 #
 #print(len(labels))
+resutls = []
+for j in range(len(np.unique(otherlabel.labels_))):
+    aux = b.copy()
+    for i in range(len(aux)):
+        if otherlabel.labels_[i] == j:
+            b[i] = 10
+        else:
+            b[i] = 255
+    aux = aux.reshape(a.shape)
+    aux = np.clip(aux/255,0.0,1.1)
+    resutls.append(aux)
+    plt.figure(j)
+    plt.imshow(aux)
+    plt.show()
 
-for i in range(len(b)):
-    if otherlabel.labels_[i] == 0:
-        b[i] = 0
-    if otherlabel.labels_[i] == 1:
-        b[i] = 0
-    if otherlabel.labels_[i] == 2:
-        b[i] = 255
-c = b.reshape(a.shape)
-c = np.clip(c/255,0.0,1.1)
-print(a.shape,'     ',c.shape)
-print(np.array_equal(a, c))
-plt.imshow(c)
+print('AXULIAR: ', resutls[2].shape)
+aux2 = resutls[2]
+aux2 = skimage.morphology.opening(aux2,skimage.morphology.square(3))
+plt.imshow(aux2)
 plt.show()
 
-d = skimage.morphology.opening(c)
-#d = skimage.morphology.dilation(d)
-print(d.shape)
-plt.imshow(d)
-plt.show()
-#d = lp(to_yiq(c),4)
-#d = to_rgb(d)
-#plt.imshow(d)
+#c = b.reshape(a.shape)
+#c = np.clip(c/255,0.0,1.1)
+#print(a.shape,'     ',c.shape)
+#print(np.array_equal(a, c))
+#plt.imshow(c)
 #plt.show()
+
 

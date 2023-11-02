@@ -152,7 +152,7 @@ class App(object):
             )
             if file is None:
                 return
-            libK.saveImgTk(self.image_resultant, file)
+            libK.saveImgPIL(self.image_resultant, file)
         except ValueError:
             print('Hubo un error inesperado')
 
@@ -161,14 +161,16 @@ class App(object):
         if op in self.operations:
             if op == self.operations[0]:
                 result = libK.resize_image_dir(Image.fromarray(libK.raizFilter(self.image1_path)), self.size_image)
-                self.image_resultant = result
+                size_original = Image.fromarray(libK.raizFilter(self.image1_path))
+                self.image_resultant = size_original
                 self.draw_hists(
                     libK.RGBtoYIQ(self.image1_path)[:, :, 0],
                     libK.RGBtoYIQ_array(libK.raizFilter(self.image1_path))[:, :, 0]
                 )
             elif op == self.operations[1]:
                 result = libK.resize_image_dir(Image.fromarray(libK.expFilter(self.image1_path)), self.size_image)
-                self.image_resultant = result
+                size_original = Image.fromarray(libK.expFilter(self.image1_path))
+                self.image_resultant = size_original
                 self.draw_hists(
                     libK.RGBtoYIQ(self.image1_path)[:, :, 0],
                     libK.RGBtoYIQ_array(libK.expFilter(self.image1_path))[:, :, 0]
@@ -177,7 +179,9 @@ class App(object):
                 result = libK.resize_image_dir(Image.fromarray(
                     libK.linearPartialFiler(self.image1_path, self.hSlider.getValues()[0], self.hSlider.getValues()[1])),
                                                self.size_image)
-                self.image_resultant = result
+                size_original = Image.fromarray(
+                    libK.linearPartialFiler(self.image1_path, self.hSlider.getValues()[0], self.hSlider.getValues()[1]))
+                self.image_resultant = size_original
                 self.draw_hists(
                     libK.RGBtoYIQ(self.image1_path)[:, :, 0],
                     libK.RGBtoYIQ_array(

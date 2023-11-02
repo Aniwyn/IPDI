@@ -269,16 +269,12 @@ def bartlett_filter(image, size):
     kernel[:, 0] = row
     kernel[:, size - 1] = row
 
-    sum = 0
     for i in range(1, size - 1):
         for j in range(1, size - 1):
             kernel[i, j] = kernel[0, j] * kernel[i, 0]
 
-    print(kernel)
-    for a in range(size):
-        for b in range(size):
-            sum += kernel[a,b]
-    print(sum)
+    kernel /= ((size+1)/2)**4
+
     return convolve(image, kernel)
 
 

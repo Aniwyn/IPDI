@@ -3,19 +3,21 @@ import numpy as np
 import imageio.v2 as imageio
 from PIL import ImageTk
 import skimage.morphology as morp
+import os
 
 
 # ------------------------Img Manager----------------------
 def uploadImgNormalize(path):
-    return np.clip(imageio.imread(path) / 255., 0, 1)
+    return np.clip(imageio.imread(path) / 255, 0.0, 1.0).astype(np.uint8)
 
+def uploadImg(path):
+    return imageio.imread(path)
 
 def saveImg(img, path):
     return imageio.imwrite(path, img.astpype(np.uint8))
 
-def saveImgTk(img, file):
-    imgPil = ImageTk.getimage(img)
-    imgPil.save(file.name)
+def saveImgPIL(img, file):
+    img.save(file.name)
 
 def resize_image_dir(image, size):
     width, height = image.size
@@ -27,6 +29,7 @@ def resize_image_dir(image, size):
         new_height = size
     new_image = ImageTk.PhotoImage(image.resize((new_width, new_height)))
     return new_image
+
 
 
 # ------------------------Across Space Chromatic----------------------
@@ -320,11 +323,47 @@ def median_filter(data, filter_size):
             temp = []
     return data_final
 # ------------------------Morfologia--------------------------------
-def erosion_binary(im):
-    return morp.binary_erosion(im)
-def erosion(im):
-    return morp.erosion(im)
-def dilation_binary(im):
-    return morp.binary_dilation(im)
-def dilation(im):
-    return morp.dilation(im)
+def erosion(im,square_value,canal):
+    if type(im) is str:
+        im = uploadImg(im)
+
+    if canal == 'r':
+        for i in range(im.shape[2]):
+            im[:,:,i] = morp.erosion(im[:,:,i], morp.square(square_value))
+        return im
+    elif canal == 'y':
+        im[:,:,0] = morp.erosion(im[:,:,0], morp.square(square_value))
+        return YIQtoRGB(im)
+def dilation(im,square_value,canal):
+    if type(im) is str:
+        im = uploadImg(im)
+
+    if canal == 'r':
+        for i in range(im.shape[2]):
+            im[:,:,i] = morp.dilation(im[:,:,i], morp.square(square_value))
+        return im
+    elif canal == 'y':
+        im[:,:,0] = morp.dilation(im[:,:,0], morp.square(square_value))
+        return YIQtoRGB(im)
+def opening(im,square_value,canal):
+    if type(im) is str:
+        im = uploadImg(im)
+
+    if canal == 'r':
+        for i in range(im.shape[2]):
+            im[:,:,i] = morp.opening(im[:,:,i], morp.square(square_value))
+        return im
+    elif canal == 'y':
+        im[:,:,0] = morp.opening(im[:,:,0], morp.square(square_value))
+        return YIQtoRGB(im)
+def closing(im,square_value,canal):
+    if type(im) is str:
+        im = uploadImg(im)
+
+    if canal == 'r':
+        for i in range(im.shape[2]):
+            im[:,:,i] = morp.closing(im[:,:,i], morp.square(square_value))
+        return im
+    elif canal == 'y':
+        im[:,:,0] = morp.closing(im[:,:,0], morp.square(square_value))
+        return YIQtoRGB(im)

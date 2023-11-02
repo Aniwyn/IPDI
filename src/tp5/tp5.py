@@ -12,7 +12,7 @@ import sv_ttk
 class App(object):
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("Introduccion al Procesamiento Digital de Imagenes - TP3")
+        self.root.title("Introduccion al Procesamiento Digital de Imagenes - TP5")
         self.root.geometry('1080x600')
         self.style = ttk.Style()
         sv_ttk.use_light_theme()
@@ -22,7 +22,7 @@ class App(object):
         self.path_img = StringVar()
         self.size_image = 340
         self.image_resultant = ''
-        self.operations = ['Erosion', 'Dilatacion', 'Apertura','Cierre', 'BordeMorf', 'Mediana', 'Meanshift']
+        self.operations = ['Erosion', 'Dilatacion', 'Apertura','Cierre']
 
         self.image1_path = '../../resource/1024x600/1.png'
         image1 = lib.resize_image(self.image1_path, self.size_image)
@@ -69,7 +69,7 @@ class App(object):
             self.root,
             text="Calcular",
             width=10,
-            command=lambda: self.process()
+            command=lambda: self.process(int(entry_number.get()))
         )
         button_process.place(x=420, y=60)
 
@@ -89,6 +89,15 @@ class App(object):
             command=lambda: self.root.quit()
         )
         button_process.place(x=900, y=550)
+
+        self.entry1 = Label(frame, text='Multiplicador', padx=5, width=31, anchor='w')
+        entry_number = ttk.Entry(
+            self.root,
+            width=10,
+        )
+        entry_number.insert(0,'3')
+        entry_number.place(x=420, y=150)
+        self.entry1.place(x=420, y=180)
 
 
     def upload_image(self, size, img, image_n_path,  path_lb):
@@ -118,24 +127,29 @@ class App(object):
             )
             if file is None:
                 return
-            libK.saveImgTk(self.image_resultant, file)
+            libK.saveImgPIL(self.image_resultant, file)
         except ValueError:
             print('Hubo un error inesperado')
 
-    def process(self):
+    def process(self, square_value):
         op = self.combo_operation.get()
         if op in self.operations:
             if op == self.operations[0]:
-                result = libK.resize_image_dir(Image.fromarray(libK.raizFilter(self.image1_path)), self.size_image)
-                self.image_resultant = result
+                result = libK.resize_image_dir(Image.fromarray(libK.erosion(self.image1_path,square_value,'r')), self.size_image)
+                size_original = Image.fromarray(libK.erosion(self.image1_path,square_value,'r'))
+                self.image_resultant = size_original
             elif op == self.operations[1]:
-                result = libK.resize_image_dir(Image.fromarray(libK.expFilter(self.image1_path)), self.size_image)
-                self.image_resultant = result
+                result = libK.resize_image_dir(Image.fromarray(libK.dilation(self.image1_path,square_value,'r')), self.size_image)
+                size_original = Image.fromarray(libK.dilation(self.image1_path,square_value,'r'))
+                self.image_resultant = size_original
             elif op == self.operations[2]:
-                result = libK.resize_image_dir(Image.fromarray(
-                    libK.linearPartialFiler(self.image1_path, self.hSlider.getValues()[0], self.hSlider.getValues()[1])),
-                                               self.size_image)
-                self.image_resultant = result
+                result = libK.resize_image_dir(Image.fromarray(libK.opening(self.image1_path,square_value,'r')), self.size_image)
+                size_original = Image.fromarray(libK.opening(self.image1_path,square_value,'r'))
+                self.image_resultant = size_original
+            elif op == self.operations[3]:
+                result = libK.resize_image_dir(Image.fromarray(libK.closing(self.image1_path,square_value,'r')), self.size_image)
+                size_original = Image.fromarray(libK.closing(self.image1_path,square_value,'r'))
+                self.image_resultant = size_original
 
             self.lb_img3.config(image=result)
             self.lb_img3.image = result
