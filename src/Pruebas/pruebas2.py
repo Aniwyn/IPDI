@@ -6,6 +6,8 @@ from sklearn.cluster import MeanShift as sms
 from sklearn.cluster import estimate_bandwidth
 import cv2
 
+def mean(dataset):
+    return sum(dataset)/len(dataset)
 def euclidean_distance(x,center):
     return np.sqrt(np.sum((x-center)**2))
 
@@ -57,7 +59,7 @@ class MeanShift:
         return labels
 
 
-im = imageio.v2.imread('../../resource/f3.png')
+im = imageio.v2.imread('../../resource/0508.png')
 #im = np.clip(im/255,0.0,1.0)
 im = np.clip(im,0,255)
 #im = k.RGBtoYIQ_array(im)
@@ -92,8 +94,12 @@ b = np.column_stack((a[:,:,0].flatten(),a[:,:,1].flatten(),a[:,:,2].flatten()))
 
 print(b.shape)
 print('entre')
-otherlabel = sms(bandwidth=29, bin_seeding=True).fit(b)
-#29 es el bueno de 5 clases
+otherlabel = sms(bandwidth=13, bin_seeding=True).fit(b)
+#29 con f2.png
+#15 con 0408.png
+#14 con 0408.png
+#14 con 0508Raiz.png
+#13 con 0508.png
 print('Sali')
 print(b.shape)
 print('Cantidad de labels de sklearn: ',len(np.unique(otherlabel.labels_)))
@@ -109,14 +115,27 @@ print(np.unique(otherlabel.labels_))
 #plt.show()
 #
 #print(len(labels))
+colors = []
+for j in range(len(np.unique(otherlabel.labels_))):
+    rc = []
+    gc = []
+    bc = []
+    aux = np.copy(b)
+    for i in range(aux.shape[0]):
+        if otherlabel.labels_[i] == j:
+            rc.append(aux[i,0])
+            gc.append(aux[i,1])
+            bc.append(aux[i,2])
+    colors.append([mean(rc),mean(gc),mean(bc)])
+
 resutls = []
 for j in range(len(np.unique(otherlabel.labels_))):
-    aux = b.copy()
-    for i in range(len(aux)):
+    aux = np.copy(b)
+    for i in range(aux.shape[0]):
         if otherlabel.labels_[i] == j:
-            b[i] = 10
+            aux[i] = 0
         else:
-            b[i] = 255
+            aux[i] = 255
     aux = aux.reshape(a.shape)
     aux = np.clip(aux/255,0.0,1.1)
     resutls.append(aux)
@@ -124,17 +143,25 @@ for j in range(len(np.unique(otherlabel.labels_))):
     plt.imshow(aux)
     plt.show()
 
-print('AXULIAR: ', resutls[2].shape)
-aux2 = resutls[2]
-aux2 = skimage.morphology.opening(aux2,skimage.morphology.square(3))
-plt.imshow(aux2)
-plt.show()
 
-#c = b.reshape(a.shape)
-#c = np.clip(c/255,0.0,1.1)
-#print(a.shape,'     ',c.shape)
-#print(np.array_equal(a, c))
-#plt.imshow(c)
+#resutls = []
+#aux = np.copy(b)
+#for j in range(len(np.unique(otherlabel.labels_))):
+#    for i in range(aux.shape[0]):
+#        if otherlabel.labels_[i] == j:
+#            aux[i] = colors[j]
+#        #else:
+#        #    aux[i] = 255
+#    aux = aux.reshape(a.shape)
+#    aux = np.clip(aux/255,0.0,1.1)
+#    resutls.append(aux)
+#    plt.figure(j)
+#    plt.imshow(aux)
+#    plt.show()
+
+#plt.figure(1)
+#plt.imshow(a)
 #plt.show()
-
-
+#plt.figure(2)
+#plt.imshow(resutls[len(resutls)-1])
+#plt.show()
