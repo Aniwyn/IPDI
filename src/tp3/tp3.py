@@ -212,7 +212,8 @@ class App(object):
 
     def mostrar_histograma(self, datos):
         datos = datos.flatten()
-        hist, bin_edges = np.histogram(datos, bins=[0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+        #hist, bin_edges = np.histogram(datos, bins=[0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+        hist, bin_edges = np.histogram(datos, bins=[0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], range=(0,1))
         porcentajes = (hist / len(datos)) * 100
 
         plt.figure()

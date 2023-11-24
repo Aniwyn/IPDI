@@ -2,99 +2,25 @@ import imageio.v2
 import matplotlib.pyplot as plt
 import numpy as np
 import skimage.morphology
-from sklearn.cluster import MeanShift as sms
-from sklearn.cluster import estimate_bandwidth
-import cv2
+from sklearn.cluster import MeanShift as skMeanShift
+from skimage.morphology import skeletonize
+from skimage import measure
+import src.PixelArithmetic as k
 
-def mean(dataset):
-    return sum(dataset)/len(dataset)
-def euclidean_distance(x,center):
-    return np.sqrt(np.sum((x-center)**2))
-
-def gaussian_kernel(distance, epsilon):
-    return (1/(epsilon * np.sqrt(2*np.pi))) * np.exp(-0.5*((distance/epsilon))**2)
-
-def neighbourhood(X, x_centroid, epsilon):
-    in_neighbourhood = []
-    for x in X:
-        distance = euclidean_distance(x, x_centroid)
-        if distance <= epsilon:
-            in_neighbourhood.append(x)
-    return in_neighbourhood
-
-class MeanShift:
-    def __init__(self, epsilon, iters=100):
-        self.epsilon = epsilon
-        self.iters = iters
-        self.centroids_ = []
-    def fit(self,_X):
-        X = np.copy(_X)
-
-        for _ in range(self.iters):
-            print('Iteracion numero: ',_)
-            for i in range(len(X)):
-                neighbours = neighbourhood(X, X[i], self.epsilon)
-
-                m_num = 0
-                m_dem = 0
-
-                for neighbour in neighbours:
-                    distance = euclidean_distance(neighbour, X[i])
-                    weight = gaussian_kernel(distance, self.epsilon)
-                    m_num += (weight * neighbour)
-                    m_dem += weight
-
-                X[i] = m_num/m_dem
-        self.centroids_ = np.copy(X)
-
-
-
-    def predict(self,X):
-        labels = []
-
-        for x in X:
-            distances = [euclidean_distance(x, center) for center in self.centroids_]
-            labels.append(distances.index(min(distances)))
-
-        return labels
-
-
-im = imageio.v2.imread('../../resource/0508.png')
-#im = np.clip(im/255,0.0,1.0)
+im = imageio.v2.imread('../../resource/S2.png')
 im = np.clip(im,0,255)
-#im = k.RGBtoYIQ_array(im)
 
 t = np.copy(im)
-#t = to_yiq(t)
-#t = cv2.medianBlur(imc,5)
-#t = cv2.medianBlur(t,3)
-#t = to_rgb(np.clip(t/255,0.0,1.0))
-#plt.imshow(t)
-#plt.show()
+print('T ', t.shape)
 
-print(t.shape)
 a = np.stack((t[:,:,0],t[:,:,1],t[:,:,2]), axis=-1)
-print(a.shape)
+print('A', a.shape)
 
-#r={}
-#for i in range(a.shape[0]):
-#    for j in range(a.shape[1]):
-#        r[(i,j)]=[a[i,j,0],a[i,j,1]]
-
-#print(len(r))
-
-#fig, axs = plt.subplots(1, 2, figsize=(10, 4))
-#fig = plt.figure()
 b = np.column_stack((a[:,:,0].flatten(),a[:,:,1].flatten(),a[:,:,2].flatten()))
-
-#model = MeanShift(epsilon=28,iters=25) #0.00023
-#model.fit(b)
-#labels = model.predict(b)
-#centroids = model.centroids_
-
 print(b.shape)
+
 print('entre')
-otherlabel = sms(bandwidth=13, bin_seeding=True).fit(b)
+otherlabel = skMeanShift(bandwidth=60, bin_seeding=True).fit(b)
 #29 con f2.png
 #15 con 0408.png
 #14 con 0408.png
@@ -105,63 +31,83 @@ print(b.shape)
 print('Cantidad de labels de sklearn: ',len(np.unique(otherlabel.labels_)))
 print(np.unique(otherlabel.labels_))
 
-#fig = plt.figure()
-#ax = fig.add_subplot(111, projection='3d')
-#ax.scatter(b[:,0], b[:,1], b[:,2], c=labels)
-#ax.scatter(centroids[:,0], centroids[:,1], centroids[:,2], c='r', s=50, marker= 'x')
-#ax.set_xlabel('Eje R')
-#ax.set_ylabel('Eje G')
-#ax.set_zlabel('Eje B')
-#plt.show()
-#
-#print(len(labels))
-colors = []
-for j in range(len(np.unique(otherlabel.labels_))):
-    rc = []
-    gc = []
-    bc = []
-    aux = np.copy(b)
-    for i in range(aux.shape[0]):
-        if otherlabel.labels_[i] == j:
-            rc.append(aux[i,0])
-            gc.append(aux[i,1])
-            bc.append(aux[i,2])
-    colors.append([mean(rc),mean(gc),mean(bc)])
+#colors = []
+#for j in range(len(np.unique(otherlabel.labels_))):
+#    rc = []
+#    gc = []
+#    bc = []
+#    aux = np.copy(b)
+#    for i in range(aux.shape[0]):
+#        if otherlabel.labels_[i] == j:
+#            rc.append(aux[i,0])
+#            gc.append(aux[i,1])
+#            bc.append(aux[i,2])
+#    colors.append([mean(rc),mean(gc),mean(bc)])
 
 resutls = []
 for j in range(len(np.unique(otherlabel.labels_))):
     aux = np.copy(b)
     for i in range(aux.shape[0]):
         if otherlabel.labels_[i] == j:
-            aux[i] = 0
-        else:
             aux[i] = 255
+        else:
+            aux[i] = 0
     aux = aux.reshape(a.shape)
     aux = np.clip(aux/255,0.0,1.1)
     resutls.append(aux)
-    plt.figure(j)
-    plt.imshow(aux)
-    plt.show()
+    print('Figura nro: ', j)
+
+plt.figure(0)
+plt.imshow(resutls[1])
+plt.show()
 
 
-#resutls = []
-#aux = np.copy(b)
-#for j in range(len(np.unique(otherlabel.labels_))):
-#    for i in range(aux.shape[0]):
-#        if otherlabel.labels_[i] == j:
-#            aux[i] = colors[j]
-#        #else:
-#        #    aux[i] = 255
-#    aux = aux.reshape(a.shape)
-#    aux = np.clip(aux/255,0.0,1.1)
-#    resutls.append(aux)
-#    plt.figure(j)
-#    plt.imshow(aux)
-#    plt.show()
 
-#plt.figure(1)
-#plt.imshow(a)
-#plt.show()
-#plt.figure(2)
-#plt.imshow(resutls[len(resutls)-1])
-#plt.show()
+pond_binary = resutls[1][:,:,0]
+skeleton = skeletonize(pond_binary)
+print(pond_binary.shape)
+
+# display results
+fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(8, 4),
+                         sharex=True, sharey=True)
+
+ax = axes.ravel()
+
+ax[0].imshow(pond_binary, cmap=plt.cm.gray)
+ax[0].axis('off')
+ax[0].set_title('original', fontsize=20)
+
+exit()
+
+ax[1].imshow(skeleton, cmap=plt.cm.gray)
+ax[1].axis('off')
+ax[1].set_title('skeleton', fontsize=20)
+
+fig.tight_layout()
+plt.show()
+
+# Find contours at a constant value of 0.8
+contours = measure.find_contours(pond_binary, 0.9)
+print("Numero de contornos encontrados: " + str(len(contours)))
+
+# Display the image and plot all contours found
+fig, ax = plt.subplots()
+ax.imshow(pond_binary, cmap=plt.cm.gray)
+
+for contour in contours:
+    ax.plot(contour[:, 1], contour[:, 0], linewidth=2)
+
+ax.axis('image')
+ax.set_xticks([])
+ax.set_yticks([])
+plt.show()
+
+contorno_prueba = np.array(contours[0])
+print('Contorno de prueba: ', contorno_prueba.shape)
+print(contorno_prueba)
+
+shape_features = []
+
+shape_features[0] = measure.perimeter(contorno_prueba,neighborhood=4)
+
+print('Perimetro: ', shape_features[0])
