@@ -133,7 +133,7 @@ class App(object):
 
     def process(self, square_value):
         op = self.combo_operation.get()
-        if op in self.operatiozns:
+        if op in self.operations:
             if op == self.operations[0]:
                 result = libK.resize_image_dir(Image.fromarray(libK.erosion(self.image1_path,square_value,'r')), self.size_image)
                 size_original = Image.fromarray(libK.erosion(self.image1_path,square_value,'r'))

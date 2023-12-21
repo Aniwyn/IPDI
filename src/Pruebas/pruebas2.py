@@ -7,7 +7,7 @@ from skimage.morphology import skeletonize
 from skimage import measure
 import src.PixelArithmetic as k
 
-im = imageio.v2.imread('../../resource/S2.png')
+im = imageio.v2.imread('../../resource/0508.png')
 im = np.clip(im,0,255)
 
 t = np.copy(im)
@@ -20,7 +20,7 @@ b = np.column_stack((a[:,:,0].flatten(),a[:,:,1].flatten(),a[:,:,2].flatten()))
 print(b.shape)
 
 print('entre')
-otherlabel = skMeanShift(bandwidth=60, bin_seeding=True).fit(b)
+otherlabel = skMeanShift(bandwidth=13, bin_seeding=True).fit(b)
 #29 con f2.png
 #15 con 0408.png
 #14 con 0408.png
@@ -76,8 +76,6 @@ ax = axes.ravel()
 ax[0].imshow(pond_binary, cmap=plt.cm.gray)
 ax[0].axis('off')
 ax[0].set_title('original', fontsize=20)
-
-exit()
 
 ax[1].imshow(skeleton, cmap=plt.cm.gray)
 ax[1].axis('off')

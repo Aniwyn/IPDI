@@ -248,9 +248,11 @@ def gaussian_blur_filter(image, size):
     kernel[:, 0] = pascal_row
     kernel[:, size - 1] = pascal_row
 
+
     for i in range(1, size - 1):
         for j in range(1, size - 1):
             kernel[i, j] = kernel[0, j] * kernel[i, 0]
+    print(kernel)
     kernel = kernel / (16 ** (size // 2))
 
     return convolve(image, kernel)
@@ -268,12 +270,14 @@ def bartlett_filter(image, size):
     kernel[size - 1, :] = row
     kernel[:, 0] = row
     kernel[:, size - 1] = row
+    print(kernel)
 
     for i in range(1, size - 1):
         for j in range(1, size - 1):
             kernel[i, j] = kernel[0, j] * kernel[i, 0]
-
+    print(kernel)
     kernel /= ((size+1)/2)**4
+    print(kernel)
 
     return convolve(image, kernel)
 

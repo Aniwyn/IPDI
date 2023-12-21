@@ -103,11 +103,10 @@ cv.imshow("Opening: ({}, {})".format(
 cv.waitKey(0)
 
 
-exit()
 contours, hierarchy = cv.findContours(th2, cv.RETR_LIST, cv.CHAIN_APPROX_TC89_L1)
 print("Numero de contornos encontrados: " + str(len(contours)))
 
-cv.drawContours(th2, contours, 1947, (127, 127, 127), 5)
+cv.drawContours(th2, contours, -1, (127, 127, 127), 5)
 cv.imshow("Contours", th2);
 
 for i in range(len(contours)):
